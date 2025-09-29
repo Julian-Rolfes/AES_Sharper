@@ -1,25 +1,25 @@
-
 # AES_Sharper
 
-A simple and efficient .NET class for AES-256 encryption with SHA256 key derivation.
+**MIT License** – free to use in your projects.
+
+A simple and efficient .NET library for AES-256 encryption with SHA256 key derivation.
 
 ---
 
 ## Features
 
-- 🔒 **AES-256 encryption**  
-- 🔑 **SHA256 key derivation**  
-- 🚀 **Easy to use**  
-- 🛡️ **Secure by default**  
-- 📦 **No external dependencies**  
+- 🔒 AES-256 encryption  
+- 🔑 SHA256 key derivation  
+- 🚀 Easy to use  
+- 🛡️ Secure by default  
+- 📦 No external dependencies  
 
 ---
 
 ## Installation
 
-Copy the `AES_Sharper.cs` file into your .NET project.
-
-Include the following namespaces:
+1. Copy the `AES_Sharper.cs` file into your .NET project.  
+2. Include the following namespaces:
 
 ```csharp
 using System;
@@ -50,26 +50,27 @@ Encode(string input, string key)
 
 Encrypts a string using the provided key.
 
-Parameters:
+    Parameters:
 
-    input - The text to encrypt
+        input – The text to encrypt
 
-    key - The encryption password
+        key – The encryption password
 
-Returns: Base64 encoded encrypted string
+    Returns: Base64 encoded encrypted string
+
 Decode(string input, string key)
 
 Decrypts a string using the provided key.
 
-Parameters:
+    Parameters:
 
-    input - Base64 encoded encrypted string
+        input – Base64 encoded encrypted string
 
-    key - The decryption password
+        key – The decryption password
 
-Returns: Original plaintext string
+    Returns: Original plaintext string
+
 Examples
-Basic Usage
 
 var aes = new AES_Sharper();
 
@@ -134,6 +135,8 @@ Security Notes
 
     AES-256 provides strong encryption
 
+    This library does not manage password security – ensure keys are stored safely
+
 Requirements
 
     .NET Framework / .NET Core
@@ -142,4 +145,5 @@ Requirements
 
 License
 
-MIT License – feel free to use in your projects!
+MIT License – see LICENSE
+file for details.
