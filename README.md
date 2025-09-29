@@ -18,17 +18,8 @@ A simple and efficient .NET library for AES-256 encryption with SHA256 key deriv
 
 ## Installation
 
-1. Copy the `AES_Sharper.cs` file into your .NET project.  
-2. Add these namespaces:
+Copy the `AES_Sharper.cs` file into your .NET project.  
 
-   ```csharp
-   using System;
-   using System.IO;
-   using System.Security.Cryptography;
-   using System.Text;
-   ```
-
----
 
 ## Quick Start
 
