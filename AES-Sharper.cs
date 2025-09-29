@@ -26,91 +26,102 @@ using System.Security.Cryptography;
 using System.Text;
 using Aes = System.Security.Cryptography.Aes;
 
-
+// AES_Sharper class provides methods for AES encryption and decryption
 class AES_Sharper
 {
+    // Constructor (does nothing)
     public AES_Sharper()
     {
-        
-
     }
+
+    // Encrypts the input string using the provided key
     public string Encode(string input, string key)
     {
+        // Validate input and key
         if (input == "" || input.Length <= 0)
             throw new ArgumentNullException("input");
         if (key == "" || key.Length <= 0)
             throw new ArgumentNullException("key");
+
         byte[] temp;
+
+        // Hash the key using SHA256 to obtain a fixed-length key for AES
         using var sha = SHA256.Create();
         byte[] keyBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(key));
 
-
+        // Create AES instance
         using (Aes AES = Aes.Create())
         {
-            
-
-            // Create an encryptor to perform the stream transform.
+            // Create encryptor with the hashed key and auto-generated IV
             ICryptoTransform encryptor = AES.CreateEncryptor(keyBytes, AES.IV);
 
-            // Create the streams used for encryption.
+            // Create memory stream for encryption output
             using (MemoryStream msEncrypt = new MemoryStream())
             {
+                // Create crypto stream using the encryptor
                 using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
+                    // Use stream writer to write input into the crypto stream
                     using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                     {
-                        //Write all data to the stream.
                         swEncrypt.Write(input);
                     }
+                    // Get encrypted bytes from memory stream
                     temp = msEncrypt.ToArray();
+
+                    // Combine IV and encrypted data into one array (IV is needed for decryption)
                     byte[] combined = new byte[AES.IV.Length + temp.Length];
                     Buffer.BlockCopy(AES.IV, 0, combined, 0, AES.IV.Length);
                     Buffer.BlockCopy(temp, 0, combined, AES.IV.Length, temp.Length);
 
+                    // Convert combined array to Base64 string for output
                     string output = Convert.ToBase64String(combined);
                     return output;
-
-
                 }
             }
         }
-
-       
     }
+
+    // Decrypts the input string using the provided key
     public string Decode(string input, string key)
     {
+        // Validate input and key
         if (string.IsNullOrEmpty(input))
             throw new ArgumentNullException(nameof(input));
         if (string.IsNullOrEmpty(key))
             throw new ArgumentNullException(nameof(key));
 
-        // Key per SHA256 auf 32 Bytes bringen (AES-256)
+        // Hash the key using SHA256 for AES
         using var sha = SHA256.Create();
         byte[] keyBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(key));
 
-        // Input Base64-decodieren (IV + Ciphertext)
+        // Convert input from Base64 string to byte array
         byte[] combinedBytes = Convert.FromBase64String(input);
 
+        // Validate that combinedBytes contains enough bytes for IV
         if (combinedBytes.Length < 16)
-            throw new ArgumentException("Ungültiger Input: zu kurz für IV");
+            throw new ArgumentException("Invalid input: too short for IV");
 
-        // IV = erste 16 Bytes, Ciphertext = Rest
+        // Extract IV (first 16 bytes) and encrypted data (remaining bytes)
         byte[] ivBytes = new byte[16];
         byte[] cipherBytes = new byte[combinedBytes.Length - 16];
 
-        Buffer.BlockCopy(combinedBytes, 0, ivBytes, 0, 16);          // IV abschneiden
+        Buffer.BlockCopy(combinedBytes, 0, ivBytes, 0, 16);         
         Buffer.BlockCopy(combinedBytes, 16, cipherBytes, 0, cipherBytes.Length);
 
-        // AES entschlüsseln
+        // Create AES instance for decryption
         using var aes = Aes.Create();
         ICryptoTransform decryptor = aes.CreateDecryptor(keyBytes, ivBytes);
 
+        // Create memory stream from encrypted bytes
         using var msDecrypt = new MemoryStream(cipherBytes);
+
+        // Create crypto stream for decryption
         using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+
+        // Use stream reader to read decrypted text
         using var srDecrypt = new StreamReader(csDecrypt);
 
         return srDecrypt.ReadToEnd();
     }
-
-
 }
