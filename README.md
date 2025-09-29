@@ -1,5 +1,5 @@
 
-# AES_Sharper Framework
+# AES_Sharper
 
 A simple and efficient .NET class for AES-256 encryption with SHA256 key derivation.
 
