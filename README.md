@@ -1,8 +1,20 @@
 # AES_Sharper
 
+**⚠️ This project is deprecated! The new and actively maintained version is available in the [`AES-Sharper`](https://github.com/Julian-Rolfes/AES-Sharper) repository. Please use only the new repository for all future projects!**
+
+---
+
 MIT License – Free to use in your projects.
 
 A simple and efficient .NET library for AES-256 encryption with SHA256 key derivation.
+
+---
+
+## Notice
+
+> **The current and recommended project is now located in [`AES-Sharper`](https://github.com/Julian-Rolfes/AES-Sharper).  
+> This repository is no longer maintained or updated!  
+> For new projects, improvements, and support, please use only the new repository.**
 
 ---
 
@@ -19,7 +31,6 @@ A simple and efficient .NET library for AES-256 encryption with SHA256 key deriv
 ## Installation
 
 Copy the appropriate `AES_Sharper.cs` file from your desired version (`v1` or `v2`) into your .NET project.  
-
 
 ## Quick Start
 
@@ -153,7 +164,7 @@ catch (Exception ex)
 
 ### v2 Encryption Process
 
-1. Derives a 256-bit key from the password using SHA256 and PBKDF2 (Rfc2898DeriveBytes, 100.000 iterations, salt)
+1. Derives a 256-bit key from the password using SHA256 and PBKDF2 (Rfc2898DeriveBytes, 100,000 iterations, salt)
 2. Generates a random IV (Initialization Vector)
 3. Encrypts data using AES-CBC mode
 4. Combines IV + ciphertext
@@ -197,3 +208,7 @@ catch (Exception ex)
 ## License
 
 MIT License – see LICENSE for details.
+
+---
+
+**➡️ For new projects, improvements, and support, please use the new [`AES-Sharper`](https://github.com/Julian-Rolfes/AES-Sharper) repository!**
