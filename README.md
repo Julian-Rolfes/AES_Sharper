@@ -18,10 +18,12 @@ A simple and efficient .NET library for AES-256 encryption with SHA256 key deriv
 
 ## Installation
 
-Copy the `AES_Sharper.cs` file into your .NET project.  
+Copy the appropriate `AES_Sharper.cs` file from your desired version (`v1` or `v2`) into your .NET project.  
 
 
 ## Quick Start
+
+### Version 1 (v1)
 
 ```csharp
 // Create instance
@@ -36,39 +38,62 @@ string decrypted = aes.Decode(encrypted, "myPassword123");
 Console.WriteLine(decrypted); // Output: "Hello World"
 ```
 
+### Version 2 (v2) – With Salt & KDF
+
+```csharp
+var aes = new AES_Sharper();
+byte[] salt = Encoding.UTF8.GetBytes("YourCustomSalt"); // Use a unique salt per user/key!
+
+// Encrypt
+string encrypted = aes.Encode("Hello World", "myPassword123", salt);
+
+// Decrypt
+string decrypted = aes.Decode(encrypted, "myPassword123", salt);
+
+Console.WriteLine(decrypted); // Output: "Hello World"
+```
+
 ---
 
 ## API Reference
 
-### Constructor
+### v1 (Classic)
+
+#### Constructor
 
 ```csharp
 var aes = new AES_Sharper();
 ```
 
-### Methods
+#### Methods
 
-#### Encode(string input, string key)
+- **Encode(string input, string key)**  
+  Encrypts a string using the provided key.
 
-Encrypts a string using the provided key.
+- **Decode(string input, string key)**  
+  Decrypts a string using the provided key.
 
-- **Parameters:**
-  - `input` – The text to encrypt
-  - `key` – The encryption password
-- **Returns:** Base64 encoded encrypted string
+### v2 (Enhanced with Salt & KDF)
 
-#### Decode(string input, string key)
+#### Constructor
 
-Decrypts a string using the provided key.
+```csharp
+var aes = new AES_Sharper();
+```
 
-- **Parameters:**
-  - `input` – Base64 encoded encrypted string
-  - `key` – The decryption password
-- **Returns:** Original plaintext string
+#### Methods
+
+- **Encode(string input, string key, byte[] saltBytes)**  
+  Encrypts using a password and salt (with PBKDF2).
+
+- **Decode(string input, string key, byte[] saltBytes)**  
+  Decrypts using a password and salt (with PBKDF2).
 
 ---
 
 ## Examples
+
+### v1 Example
 
 ```csharp
 var aes = new AES_Sharper();
@@ -85,6 +110,24 @@ string decrypted = aes.Decode(encrypted, password);
 Console.WriteLine(decrypted); // Output: "Sensitive data"
 ```
 
+### v2 Example (Recommended)
+
+```csharp
+var aes = new AES_Sharper();
+byte[] salt = Encoding.UTF8.GetBytes("UniqueSaltValue"); // Use a random salt in production!
+
+string secret = "Sensitive data";
+string password = "StrongPassword!";
+
+// Encrypt
+string encrypted = aes.Encode(secret, password, salt);
+
+// Decrypt
+string decrypted = aes.Decode(encrypted, password, salt);
+
+Console.WriteLine(decrypted); // Output: "Sensitive data"
+```
+
 ---
 
 ## Error Handling
@@ -92,11 +135,11 @@ Console.WriteLine(decrypted); // Output: "Sensitive data"
 ```csharp
 try 
 {
-    string result = aes.Encode("text", "password");
+    string result = aes.Encode("text", "password", salt);
 }
 catch (ArgumentNullException ex)
 {
-    Console.WriteLine("Input or key cannot be empty");
+    Console.WriteLine("Input, key, or salt cannot be empty");
 }
 catch (Exception ex)
 {
@@ -108,19 +151,19 @@ catch (Exception ex)
 
 ## How It Works
 
-### Encryption Process
+### v2 Encryption Process
 
-1. Derives a 256-bit key from the password using SHA256
+1. Derives a 256-bit key from the password using SHA256 and PBKDF2 (Rfc2898DeriveBytes, 100.000 iterations, salt)
 2. Generates a random IV (Initialization Vector)
 3. Encrypts data using AES-CBC mode
 4. Combines IV + ciphertext
 5. Returns Base64 encoded string
 
-### Decryption Process
+### v2 Decryption Process
 
 1. Decodes Base64 input
 2. Extracts IV from the first 16 bytes
-3. Derives key from the password using SHA256
+3. Derives key from the password and salt using SHA256 and PBKDF2
 4. Decrypts the remaining ciphertext using AES
 5. Returns the original plaintext
 
@@ -128,11 +171,12 @@ catch (Exception ex)
 
 ## Security Notes
 
-- Use strong, complex passwords
-- Store passwords securely (do not hardcode them)
+- Use **strong, complex passwords**
+- Use a **unique, random salt** for each user/key in v2 (never hardcode in production)
+- Store passwords and salts securely (do not hardcode them)
 - IV is automatically generated and included in output
-- AES-256 provides strong encryption
-- This library does not manage password security – ensure keys are stored safely
+- AES-256 + PBKDF2 provides strong encryption
+- This library does not manage password/salt security – ensure keys/salts are stored safely
 
 ---
 
@@ -140,6 +184,13 @@ catch (Exception ex)
 
 - .NET Framework / .NET Core
 - System.Security.Cryptography namespace
+
+---
+
+## Versions
+
+- **v1**: Basic AES-256 encryption with SHA256 password hashing
+- **v2**: Advanced AES-256 encryption using SHA256 + PBKDF2 (salted, 100k iterations) for stronger key derivation
 
 ---
 
