@@ -27,6 +27,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 using Aes = System.Security.Cryptography.Aes;
+using System;
+using System.IO;
 
 // AES_Sharper class provides methods for AES encryption and decryption
 class AES_Sharper
